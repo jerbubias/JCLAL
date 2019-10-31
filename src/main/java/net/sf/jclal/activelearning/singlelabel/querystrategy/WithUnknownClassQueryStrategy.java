@@ -46,14 +46,19 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
         for (i = 0; i < prob.length; i++) {
             prob[i] = prob[i] / sumSim;
         }
-        /* Determine Interest */
-        double interest = tanh(2*prob[i]);
-        /* Determinar Entropy */
-        double entropy = 0;
+        /* Determine Unknown Interest */
+        double unknownInt = tanh(2 * prob[i-1]);
+        /* Determine Uncertainty Interest */
+        double uncertainInt = 0;
         for (i = 0; i < prob.length; i++) {
-            entropy -= prob[i]*log(prob[i]);
+            if(prob[i] != 0)
+                uncertainInt -= prob[i] * logbase2(prob[i]);
         }
-        /* Pick highest from interest and entropy and return it*/
-        return interest >= entropy ? interest : entropy;
+        /* Pick highest between Unknown Interest and Uncertainty Interest and return it */
+        return Math.max(unknownInt, uncertainInt);
+    }
+
+    private double logbase2(double d) {
+        return Math.log(d) / Math.log(2);
     }
 }
