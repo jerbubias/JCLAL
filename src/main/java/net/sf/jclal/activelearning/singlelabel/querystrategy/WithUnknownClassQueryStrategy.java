@@ -1,11 +1,8 @@
 package net.sf.jclal.activelearning.singlelabel.querystrategy;
 
-import weka.clusterers.SimpleKMeans;
 import weka.core.Instance;
 import weka.core.EuclideanDistance;
 import weka.core.Instances;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
 public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrategy {
 
@@ -23,6 +20,13 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
         sumSim = 0;
         maxSim = 0;
         /* Centroids Calculation */
+        System.out.println(getLabelledData().getDataset());
+        System.out.println(getLabelledData().getDataset().firstInstance().classValue());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         /* Similarities Calculation */
         for (i = 0; i < centroids.numInstances(); i++) {
             sim = 1 / (1 + euc.distance(instance, centroids.get(i)));
@@ -35,7 +39,7 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
         unkSim = 1 - maxSim;
         prob[i] = unkSim;
         sumSim += unkSim;
-        /* Calculate Probabilities */
+        /* Calculate Probability Distribution */
         for (i = 0; i < prob.length; i++) {
             prob[i] = prob[i] / sumSim;
         }
