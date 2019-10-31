@@ -1,7 +1,11 @@
 package net.sf.jclal.activelearning.singlelabel.querystrategy;
 
+import weka.clusterers.SimpleKMeans;
 import weka.core.Instance;
 import weka.core.EuclideanDistance;
+import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
 
 public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrategy {
 
@@ -11,47 +15,31 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
 
     @Override
     public double utilityInstance(Instance instance) {
+        int i;
+        double sim, sumSim, maxSim, unkSim;
+        Instances centroids = null;
         EuclideanDistance euc = new EuclideanDistance(getLabelledData().getDataset());
-
-        double max = 0;
-        double temp,sum=0;
-
-        /*for (Instance current : getLabelledData().getDataset()) {
-            temp = 1 / (1 + euc.distance(instance, current));
-            if(temp > max)
-                max = temp;
+        double[] prob = new double[getLabelledData().getDataset().numClasses() + 1];
+        sumSim = 0;
+        maxSim = 0;
+        /* Centroids Calculation */
+        /* Similarities Calculation */
+        for (i = 0; i < centroids.numInstances(); i++) {
+            sim = 1 / (1 + euc.distance(instance, centroids.get(i)));
+            prob[i] = sim;
+            sumSim += sim;
+            if (sim > maxSim)
+                maxSim = sim;
         }
-        */
-
-        for (Instance current : getLabelledData().getDataset()) {
-            temp = 1 / (1 + euc.distance(instance, current));
-            if (temp > max)
-                max = temp;
-            sum += temp;
+        /* Similarity of Unknown Calculation */
+        unkSim = 1 - maxSim;
+        prob[i] = unkSim;
+        sumSim += unkSim;
+        /* Calculate Probabilities */
+        for (i = 0; i < prob.length; i++) {
+            prob[i] = prob[i] / sumSim;
         }
-
-        double simUnknown = 1 - max;
-
-        double prob = simUnknown / sum;
-
-        /*
-        double sumatoria = 0;
-        double log;
-
-        for (double current : probabilities) {
-
-            if (current != 0) {
-                log = logbase2(current);
-                sumatoria += current * log;
-            }
-        }
-
-        return (sumatoria != 0) ? (-sumatoria) : 0;
-        */
+        /* Determine Interest */
         return 0;
-    }
-
-    private double logbase2(double d) {
-        return Math.log(d) / Math.log(2);
     }
 }
