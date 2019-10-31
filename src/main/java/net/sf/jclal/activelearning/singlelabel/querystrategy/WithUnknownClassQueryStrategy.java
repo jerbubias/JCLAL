@@ -7,6 +7,9 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import static java.lang.Math.log;
+import static java.lang.Math.tanh;
+
 public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrategy {
 
     public WithUnknownClassQueryStrategy() {
@@ -40,6 +43,13 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
             prob[i] = prob[i] / sumSim;
         }
         /* Determine Interest */
-        return 0;
+        double interest = tanh(2*prob[i]);
+        /* Determinar Entropy */
+        double entropy = 0;
+        for (i = 0; i < prob.length; i++) {
+            entropy -= prob[i]*log(prob[i]);
+        }
+        /* Pick highest from interest and entropy and return it*/
+        return interest >= entropy ? interest : entropy;
     }
 }
