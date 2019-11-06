@@ -28,11 +28,9 @@ public class WithUnknownClassQueryStrategy extends AbstractSingleLabelQueryStrat
         /* Similarities Calculation */
         formattedInstance = getClassless(instance, getLabelledData().getDataset());
         euc = new EuclideanDistance(centroids);
+        euc.setDontNormalize(true);
         prob = new double[centroids.numInstances() + 1];
         for (i = 0; i < centroids.numInstances(); i++) {
-            System.out.println(formattedInstance);
-            System.out.println(centroids.get(i));
-            System.out.println(euc.distance(formattedInstance, centroids.get(i)));
             sim = 1 / (1 + euc.distance(formattedInstance, centroids.get(i)));
             prob[i] = sim;
             sumSim += sim;
