@@ -8,7 +8,6 @@ import net.sf.jclal.activelearning.singlelabel.querystrategy.WithUnknownClassQue
 import net.sf.jclal.activelearning.stopcriteria.MaxIteration;
 import net.sf.jclal.activelearning.stopcriteria.UnlabeledSetEmpty;
 import net.sf.jclal.classifier.WekaClassifier;
-import net.sf.jclal.core.IClassifier;
 import net.sf.jclal.core.IQueryStrategy;
 import net.sf.jclal.evaluation.method.kFoldCrossValidation;
 import net.sf.jclal.listener.GraphicalReporterListener;
@@ -18,7 +17,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOsync;
 
 /**
- * Example of K fold cross validation experiment that uses the margin sampling
+ * Example of K fold cross validation experiment that uses the unknown class query strategy
  * as query strategy, pool-base as scenario and the classical AL process.
  *
  * @author Oscar Gabriel Reyes Pupo
@@ -26,7 +25,7 @@ import weka.classifiers.functions.SMOsync;
  */
 public class SurprisedBasedActiveLearningWithUnknownClassesExample {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         String fileName = "datasets/iris/iris.arff";
 
@@ -55,11 +54,11 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         IQueryStrategy queryStrategy = new WithUnknownClassQueryStrategy();
 
         // Set the base classifier to use in the query strategy
-        IClassifier model = new WekaClassifier();
+        WekaClassifier model = new WekaClassifier();
 
         Classifier classifier = new SMOsync();
 
-        ((WekaClassifier) model).setClassifier(classifier);
+        model.setClassifier(classifier);
 
         //Set the model into the query strategy
         queryStrategy.setClassifier(model);
