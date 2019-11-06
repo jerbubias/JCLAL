@@ -4,7 +4,6 @@ import net.sf.jclal.activelearning.algorithm.ClassicalALAlgorithm;
 import net.sf.jclal.activelearning.batchmode.QBestBatchMode;
 import net.sf.jclal.activelearning.oracle.SimulatedOracle;
 import net.sf.jclal.activelearning.scenario.PoolBasedSamplingScenario;
-import net.sf.jclal.activelearning.singlelabel.querystrategy.MarginSamplingQueryStrategy;
 import net.sf.jclal.activelearning.singlelabel.querystrategy.WithUnknownClassQueryStrategy;
 import net.sf.jclal.activelearning.stopcriteria.MaxIteration;
 import net.sf.jclal.activelearning.stopcriteria.UnlabeledSetEmpty;
@@ -39,7 +38,6 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         sampling.setInvertSelection(false);
 
         sampling.setPercentageInstancesToLabelled(5);
-        // sampling.setRandgen(IRandGen randgen);
 
         // Set the scenario to use
         PoolBasedSamplingScenario scenario = new PoolBasedSamplingScenario();
@@ -108,7 +106,7 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         method.setStratify(true);
 
         RanecuFactory random = new RanecuFactory();
-        random.setSeed(9871234);
+        random.setSeed((int)System.currentTimeMillis());
 
         method.setRandGenFactory(random);
 
