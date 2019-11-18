@@ -5,7 +5,7 @@ import net.sf.jclal.activelearning.batchmode.QBestBatchMode;
 import net.sf.jclal.activelearning.oracle.SimulatedOracle;
 import net.sf.jclal.activelearning.scenario.PoolBasedSamplingScenario;
 import net.sf.jclal.activelearning.singlelabel.querystrategy.WithUnknownClassQueryStrategy;
-import net.sf.jclal.activelearning.stopcriteria.MaxIteration;
+import net.sf.jclal.activelearning.stopcriteria.SurpriseBased;
 import net.sf.jclal.activelearning.stopcriteria.UnlabeledSetEmpty;
 import net.sf.jclal.classifier.WekaClassifier;
 import net.sf.jclal.core.IQueryStrategy;
@@ -81,8 +81,9 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         algorithm.addListener(visual);
 
         //Set the stop criteria
-        MaxIteration stop1= new MaxIteration();
-        stop1.setMaxIteration(50);
+        SurpriseBased stop1= new SurpriseBased();
+        stop1.setMinSurprise(0.1);
+        stop1.setInrConverge(5);
 
         UnlabeledSetEmpty stop2= new UnlabeledSetEmpty();
 
