@@ -1,10 +1,12 @@
 package net.sf.jclal.activelearning.stopcriteria;
 
+import net.sf.jclal.activelearning.oracle.AbstractOracle;
 import net.sf.jclal.core.IAlgorithm;
 import net.sf.jclal.core.IConfigure;
 import net.sf.jclal.core.IStopCriterion;
 import org.apache.commons.configuration.Configuration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SurpriseBased implements IStopCriterion, IConfigure {
@@ -25,29 +27,27 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
 
     @Override
     public boolean stop(IAlgorithm algorithm) {
-        // ClassicalALAlgorithm alAlgorithm = ((ClassicalALAlgorithm) algorithm);
-        // ArrayList<Integer> lol = ((AbstractQueryStrategy) alAlgorithm.getScenario().getQueryStrategy()).getSelectedInstances();
-        // if(lol.size() > 0)
-        //     System.out.println(lol.size());
         int i;
         double maxProb, surprise, maxValue;
-        double[][] instancesProb;
+        ArrayList<String> lastInstances;
         double[] prob;
         // Get Instances Queried To The Oracle
-        instancesProb = new double[2][];
-        for(i = 0; i < instancesProb.length; i++) {
-            // Get Probability Distribution
-            prob = instancesProb[i];
-            maxProb = maxArray(prob);
-            // Calculate Surprise
-            surprise = 1 - maxProb;
-            // Consider Surprise Value In The Interval Window
-            shiftInrWindowLeft(surprise);
-            // Get Maximum Value In The Interval Window
-            maxValue = maxArray(this.inrValues);
-            // Stop Training If Certain Criterion Are Valid (Less Or Equal Than The Maximum Surprise)
-            if(maxValue > this.maxSurprise)
-                return true;
+        lastInstances = ((AbstractOracle) algorithm.getScenario().getOracle()).getLastLabeledInstances();
+        if (lastInstances != null) {
+            for (i = 0; i < lastInstances.size(); i++) {
+                // Get Probability Distribution
+                prob = new double[]{0.25, 0.25, 0.25, 0.25};
+                maxProb = maxArray(prob);
+                // Calculate Surprise
+                surprise = 1 - maxProb;
+                // Consider Surprise Value In The Interval Window
+                shiftInrWindowLeft(surprise);
+                // Get Maximum Value In The Interval Window
+                maxValue = maxArray(this.inrValues);
+                // Stop Training If Certain Criterion Are Valid (Less Or Equal Than The Maximum Surprise)
+                if (maxValue > this.maxSurprise)
+                    return true;
+            }
         }
         return false;
     }
