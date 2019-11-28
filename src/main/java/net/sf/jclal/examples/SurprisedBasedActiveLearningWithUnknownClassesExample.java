@@ -36,7 +36,7 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         sampling.setNoReplacement(false);
         sampling.setInvertSelection(false);
 
-        sampling.setPercentageInstancesToLabelled(5);
+        sampling.setPercentageInstancesToLabelled(0.75);
 
         // Set the scenario to use
         PoolBasedSamplingScenario scenario = new PoolBasedSamplingScenario();
