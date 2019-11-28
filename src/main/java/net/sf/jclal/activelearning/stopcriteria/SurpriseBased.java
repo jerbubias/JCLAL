@@ -54,7 +54,7 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
             oldInstances = new Instances(labelledInstances, 0, numLabelledInstances - numQueriedInstances);
             // Get Last Instances Labelled By The Oracle
             lastInstances = new Instances(labelledInstances, numLabelledInstances - numQueriedInstances, numQueriedInstances);
-            /*
+
             // Print Instances Labelled By The Oracle
             System.out.println(numLabelledInstances);
             System.out.println(labelledInstances);
@@ -64,14 +64,14 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
             // Print Last Instances Labelled By The Oracle
             System.out.println(numQueriedInstances);
             System.out.println(lastInstances);
-             */
+
             for (i = 0; i < numQueriedInstances; i++) {
                 // Get Probability Distribution
                 prob = getProbabilityDistribution(oldInstances, lastInstances.get(i));
-                /*
+
                 // Print Probability Distribution
                 System.out.println(Arrays.toString(prob));
-                 */
+
                 maxProb = maxArray(prob);
                 // Calculate Surprise
                 surprise = 1 - maxProb;
@@ -147,7 +147,7 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
         formattedInstance = getClassless(instance, labelledInstances);
         euc = new EuclideanDistance(centroids);
         euc.setDontNormalize(true);
-        prob = new double[centroids.numInstances() + 1];
+        prob = new double[centroids.numInstances()];
         for (i = 0; i < centroids.numInstances(); i++) {
             sim = 1 / (1 + euc.distance(formattedInstance, centroids.get(i)));
             prob[i] = sim;
@@ -155,10 +155,12 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
             if (sim > maxSim)
                 maxSim = sim;
         }
+        /*
         // Similarity of Unknown Calculation
         unkSim = 1 - maxSim;
         prob[i] = unkSim;
         sumSim += unkSim;
+         */
         // Calculate Probability Distribution
         for (i = 0; i < prob.length; i++) {
             prob[i] = prob[i] / sumSim;
