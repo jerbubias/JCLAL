@@ -34,7 +34,8 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
     @Override
     public boolean stop(IAlgorithm algorithm) {
         int i;
-        double maxProb, surprise, maxValue;
+        double maxProb, eventProb, surprise, maxValue;
+        int eventProbInd;
         ArrayList<String> queriedInstances;
         int numQueriedInstances, numLabelledInstances;
         Instances labelledInstances;
@@ -72,9 +73,27 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
                 // Print Probability Distribution
                 System.out.println(Arrays.toString(prob));
                  */
-                maxProb = maxArray(prob);
-                // Calculate Surprise
-                surprise = 1 - maxProb;
+                // Get Index For The Probability Of The Class Of The Most Recent Labelled Instance
+                eventProbInd = eventProb(oldInstances, lastInstances.get(i));
+                // If Class Of The Most Recent Labelled Instance Is New
+                if(eventProbInd < 0)
+                    surprise = 1.0;
+                else{
+                    // Get Highest Probability of the Probability Distribution 'prob'
+                    maxProb = maxArray(prob);
+                    // Get The Probability Of The Class Of The Most Recent Labelled Instance
+                    eventProb = prob[eventProbInd];
+                    // Calculate Surprise
+                    surprise = logbase2(1.0 + maxProb - eventProb);
+                    /*
+                    // Print Highest Probability of the Probability Distribution
+                    System.out.println(maxProb);
+                    // Print Probability Of The Class Of The Most Recent Labelled Instance
+                    System.out.println(eventProb);
+                    // Print Surprise
+                    System.out.println(surprise);
+                     */
+                }
                 // Consider Surprise Value In The Interval Window
                 shiftInrWindowLeft(surprise);
                 // Get Maximum Value In The Interval Window
@@ -120,6 +139,34 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
             this.inrValues[i] = this.inrValues[i+1];
         }
         this.inrValues[i] = newProb;
+    }
+
+    private double logbase2(double d) {
+        return Math.log(d) / Math.log(2);
+    }
+
+    private static int eventProb(Instances labelledInstances, Instance instance) {
+        int i, j, ni;
+        int ind = 0;
+        int numClasses = labelledInstances.numClasses();
+        int numInstances =  labelledInstances.numInstances();
+        for(i = 0; i < numClasses; i++) {
+            ni = 0;
+            for (j = 0; j < numInstances; j++) {
+                if ((int) labelledInstances.get(j).classValue() == i) {
+                    ni++;
+                }
+            }
+            if(ni > 0) {
+                if(instance.classValue() != i) {
+                    ind++;
+                }
+                else {
+                    return ind;
+                }
+            }
+        }
+        return -1;
     }
 
     private static double maxArray(double[] array) {
