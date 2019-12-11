@@ -18,11 +18,10 @@ import net.sf.jclal.activelearning.algorithm.ClassicalALAlgorithm;
 import net.sf.jclal.activelearning.batchmode.QBestBatchMode;
 import net.sf.jclal.activelearning.oracle.SimulatedOracle;
 import net.sf.jclal.activelearning.scenario.PoolBasedSamplingScenario;
-import net.sf.jclal.activelearning.singlelabel.querystrategy.MarginSamplingQueryStrategy;
+import net.sf.jclal.activelearning.singlelabel.querystrategy.EntropySamplingQueryStrategy;
 import net.sf.jclal.activelearning.stopcriteria.MaxIteration;
 import net.sf.jclal.activelearning.stopcriteria.UnlabeledSetEmpty;
 import net.sf.jclal.classifier.WekaClassifier;
-import net.sf.jclal.core.IClassifier;
 import net.sf.jclal.core.IQueryStrategy;
 import net.sf.jclal.evaluation.method.kFoldCrossValidation;
 import net.sf.jclal.listener.GraphicalReporterListener;
@@ -40,7 +39,7 @@ import weka.classifiers.functions.SMOsync;
  */
 public class KFoldCrossValidationExample {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         String fileName = "datasets/iris/iris.arff";
 
@@ -51,7 +50,7 @@ public class KFoldCrossValidationExample {
         sampling.setNoReplacement(false);
         sampling.setInvertSelection(false);
 
-        sampling.setPercentageInstancesToLabelled(5);
+        sampling.setPercentageInstancesToLabelled(0.75);
 
         // Set the scenario to use
         PoolBasedSamplingScenario scenario = new PoolBasedSamplingScenario();
@@ -66,14 +65,14 @@ public class KFoldCrossValidationExample {
         scenario.setOracle(oracle);
 
         // Set the query strategy to use
-        IQueryStrategy queryStrategy = new MarginSamplingQueryStrategy();
+        IQueryStrategy queryStrategy = new EntropySamplingQueryStrategy();
 
         // Set the base classifier to use in the query strategy
-        IClassifier model = new WekaClassifier();
+        WekaClassifier model = new WekaClassifier();
 
         Classifier classifier = new SMOsync();
 
-        ((WekaClassifier) model).setClassifier(classifier);
+        model.setClassifier(classifier);
 
         //Set the model into the query strategy
         queryStrategy.setClassifier(model);
@@ -97,7 +96,7 @@ public class KFoldCrossValidationExample {
         
         //Set the stop criteria
         MaxIteration stop1= new MaxIteration();
-        stop1.setMaxIteration(50);
+        stop1.setMaxIteration(100);
         
         UnlabeledSetEmpty stop2= new UnlabeledSetEmpty();
         
@@ -120,7 +119,7 @@ public class KFoldCrossValidationExample {
         method.setStratify(true);
 
         RanecuFactory random = new RanecuFactory();
-        random.setSeed(9871234);
+        random.setSeed((int)System.currentTimeMillis());
 
         method.setRandGenFactory(random);
 
