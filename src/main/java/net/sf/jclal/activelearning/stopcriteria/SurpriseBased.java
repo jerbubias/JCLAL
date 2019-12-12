@@ -172,7 +172,7 @@ public class SurpriseBased implements IStopCriterion, IConfigure {
     private static double maxArray(double[] array) {
         int i;
         double max = 0.0;
-        for(i = 0; i < array.length-1; i++) {
+        for(i = 0; i < array.length; i++) {
             if(array[i] > max)
                 max = array[i];
         }
