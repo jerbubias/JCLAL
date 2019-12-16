@@ -42,6 +42,7 @@ public class MaxIteration implements IStopCriterion, IConfigure {
             // If maximum number of iterations is exceeded, the algorithm is
             // finished
 
+		// System.out.println(algorithm.getLabeledDataSet().getDataset());
         return ((ClassicalALAlgorithm) algorithm).getIteration() > maxIteration;
     }
 

@@ -41,7 +41,7 @@ public class KFoldCrossValidationExample {
 
     public static void main(String[] args) {
 
-        String fileName = "datasets/iris/iris.arff";
+        String fileName = "datasets/diabetes_arff.arff";
 
         // The initial labeled set from the training set is randomly
         // selected
@@ -50,7 +50,7 @@ public class KFoldCrossValidationExample {
         sampling.setNoReplacement(false);
         sampling.setInvertSelection(false);
 
-        sampling.setPercentageInstancesToLabelled(0.75);
+        sampling.setPercentageInstancesToLabelled(0.15);
 
         // Set the scenario to use
         PoolBasedSamplingScenario scenario = new PoolBasedSamplingScenario();
@@ -119,7 +119,8 @@ public class KFoldCrossValidationExample {
         method.setStratify(true);
 
         RanecuFactory random = new RanecuFactory();
-        random.setSeed((int)System.currentTimeMillis());
+        // random.setSeed((int)System.currentTimeMillis());
+        random.setSeed(0);
 
         method.setRandGenFactory(random);
 

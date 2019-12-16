@@ -27,7 +27,7 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
 
     public static void main(String[] args) {
 
-        String fileName = "datasets/iris/iris.arff";
+        String fileName = "datasets/diabetes_arff.arff";
 
         // The initial labeled set from the training set is randomly
         // selected
@@ -36,7 +36,7 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         sampling.setNoReplacement(false);
         sampling.setInvertSelection(false);
 
-        sampling.setPercentageInstancesToLabelled(0.75);
+        sampling.setPercentageInstancesToLabelled(0.15);
 
         // Set the scenario to use
         PoolBasedSamplingScenario scenario = new PoolBasedSamplingScenario();
@@ -82,8 +82,8 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
 
         //Set the stop criteria
         SurpriseBased stop1= new SurpriseBased();
-        stop1.setMinSurprise(0.1);
-        stop1.setInrConverge(5);
+        stop1.setMinSurprise(0.05);
+        stop1.setInrConverge(15);
 
         UnlabeledSetEmpty stop2= new UnlabeledSetEmpty();
 
@@ -106,7 +106,8 @@ public class SurprisedBasedActiveLearningWithUnknownClassesExample {
         method.setStratify(true);
 
         RanecuFactory random = new RanecuFactory();
-        random.setSeed((int)System.currentTimeMillis());
+        // random.setSeed((int)System.currentTimeMillis());
+        random.setSeed(0);
 
         method.setRandGenFactory(random);
 
